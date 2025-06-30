@@ -1,0 +1,1 @@
+{"BSplines": {"avg_test_acc": 0.7741, "std_test_acc": 0.008642337646724995, "avg_epoch_time": 0.06310527864580236, "std_epoch_time": 0.005744364129948459}, "RBF": {"avg_test_acc": 0.8146000000000001, "std_test_acc": 0.007565712127751057, "avg_epoch_time": 0.011718537989589902, "std_epoch_time": 0.0005012640478392264}}

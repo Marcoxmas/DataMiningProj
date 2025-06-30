@@ -1,0 +1,1 @@
+{"total_parameters": 5058, "trainable_parameters": 5058, "flops": 3635952, "macs": 1817976, "avg_inference_time_ms": 1.334067153930664, "max_memory_mb": 20.240234375}
