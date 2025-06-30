@@ -116,12 +116,13 @@ class ToxCastMultiTaskDataset(InMemoryDataset):
 class ToxCastGraphDataset(InMemoryDataset):
     def __init__(self, root, target_column, transform=None, pre_transform=None):
         self.target_column = target_column
+        self.target_columns = [target_column]  # Ensure target_columns is initialized as a list
         root_parts = os.path.normpath(root).split(os.sep)
         if len(root_parts) >= 2 and root_parts[-2] == "toxcast_graph_data":
             data_dir = os.sep.join(root_parts[:-2])
         else:
             data_dir = os.path.dirname(os.path.dirname(root))
-        self.main_csv_path = os.path.join(data_dir, "toxcast_data.csv")
+        self.main_csv_path = os.path.join("data", "toxcast_data.csv")  # Ensure correct path
         super().__init__(root, transform, pre_transform)
         self.data, self.slices = torch.load(self.processed_paths[0])
     
@@ -148,20 +149,54 @@ class ToxCastGraphDataset(InMemoryDataset):
 
     def process(self):
         df = pd.read_csv(self.raw_paths[0])
+
+        # Verify all target columns exist
+        missing_columns = [col for col in self.target_columns if col not in df.columns]
+        if missing_columns:
+            raise ValueError(f"Missing target columns: {missing_columns}")
+
         data_list = []
-        for _, row in df.iterrows():
+        valid_count = 0
+        invalid_count = 0
+
+        for idx, row in df.iterrows():
             smiles = row["smiles"]
-            label = row[self.target_column]
-            if pd.isnull(label):
+
+            # Extract labels for all target columns
+            labels = []
+            valid_labels = True
+
+            for col in self.target_columns:
+                label = row[col]
+                if pd.isnull(label):
+                    valid_labels = False
+                    break
+                labels.append(float(label))
+
+            # Skip this molecule if any label is missing
+            if not valid_labels:
+                invalid_count += 1
                 continue
+
             try:
-                data = smiles_to_data(smiles, labels=label)  # Updated to use labels parameter
+                data = smiles_to_data(smiles, labels=labels)
                 if data is not None and hasattr(data, 'edge_index'):
                     data_list.append(data)
+                    valid_count += 1
                 else:
                     print(f"Excluded invalid graph for SMILES: {smiles}")
+                    invalid_count += 1
             except Exception as e:
                 print(f"Error processing SMILES '{smiles}': {e}")
+                invalid_count += 1
+
+        print(f"Processed {valid_count} valid molecules, {invalid_count} invalid/missing")
+        print(f"Target columns: {self.target_columns}")
+        print(f"Number of tasks: {len(self.target_columns)}")
+
+        if not data_list:
+            raise ValueError("No valid data found! Check your target columns and data.")
+
         data, slices = self.collate(data_list)
         torch.save((data, slices), self.processed_paths[0])
 

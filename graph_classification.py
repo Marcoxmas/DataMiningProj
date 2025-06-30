@@ -6,6 +6,7 @@ import torch
 import torch.nn as nn
 from torch_geometric.loader import DataLoader
 from torch_geometric.datasets import TUDataset
+from toxcast_dataset import ToxCastGraphDataset
 
 from src.KANG import KANG
 from src.utils import set_seed
@@ -19,7 +20,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def get_args():
 	parser = argparse.ArgumentParser(description="GKAN - Graph Classification Example")
-	parser.add_argument("--dataset_name", type=str, default="MUTAG", choices=["MUTAG", "PROTEINS"], help="Dataset name")
+	parser.add_argument("--dataset_name", type=str, default="MUTAG", help="Dataset name")
 	parser.add_argument("--epochs", type=int, default=1000, help="Training epochs")
 	parser.add_argument("--patience", type=int, default=300, help="Early stopping patience")
 	parser.add_argument("--lr", type=float, default=0.004, help="Learning rate")
@@ -32,10 +33,18 @@ def get_args():
 	parser.add_argument("--grid_min", type=int, default=-10, help="")
 	parser.add_argument("--grid_max", type=int, default=3, help="")
 	parser.add_argument("--log_freq", type=int, default=10, help="Logging frequency (epochs)")
+	parser.add_argument("--use_weighted_loss", action="store_true", help="Use weighted loss to handle class imbalance")
+	parser.add_argument("--use_roc_auc", action="store_true", help="Evaluate using ROC-AUC instead of accuracy")
 	return parser.parse_args()
 
 def graph_classification(args):
-	dataset = TUDataset(root=f'./dataset/{args.dataset_name}', name=args.dataset_name)
+	# Determine the dataset type based on the dataset name
+	if args.dataset_name in ["MUTAG", "PROTEINS"]:
+		dataset_path = f'./dataset/{args.dataset_name}'
+		dataset = TUDataset(root=dataset_path, name=args.dataset_name)
+	else:
+		dataset_path = f'./dataset/TOXCAST/{args.dataset_name}'
+		dataset = ToxCastGraphDataset(root=dataset_path, target_column=args.dataset_name)
 
 	shuffled_dataset = dataset.shuffle()
 	train_size 		= int(0.8 * len(dataset))
@@ -46,6 +55,18 @@ def graph_classification(args):
 	train_loader 	= DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
 	val_loader 		= DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False)
 	test_loader 	= DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
+
+	# Handle class imbalance with weighted loss if specified
+	if args.use_weighted_loss:
+		from collections import Counter
+		labels = [int(data.y.item()) for data in dataset]
+		label_counts = Counter(labels)
+		total = sum(label_counts.values())
+		class_weights = [total / label_counts[i] for i in range(dataset.num_classes)]
+		weights = torch.tensor(class_weights).to(device)
+		criterion = nn.CrossEntropyLoss(weight=weights)
+	else:
+		criterion = nn.CrossEntropyLoss()
 
 	model = KANG(
 		dataset.num_node_features,
@@ -59,7 +80,6 @@ def graph_classification(args):
 		device=device,
 	).to(device)
 	optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.wd)
-	criterion = nn.CrossEntropyLoss()
 
 	best_val_acc = 0
 	early_stop_counter = 0
@@ -72,25 +92,41 @@ def graph_classification(args):
 		epoch_loss = 0
 		for data in train_loader:
 			optimizer.zero_grad()
-			data 				= data.to(device)
-			out 				= model(data.x, data.edge_index, data.batch)
-			loss				= criterion(out, data.y)
-			epoch_loss	+= loss.item()
+			data = data.to(device)
+			data.y = data.y.long()  # Convert labels to LongTensor
+			out = model(data.x, data.edge_index, data.batch)
+			loss = criterion(out, data.y)
+			epoch_loss += loss.item()
 			loss.backward()
 			optimizer.step()
 
 		# Validation evaluation
 		model.eval()
-		correct = 0
-		total 	= 0
 		with torch.no_grad():
-			for data in val_loader:
-				data 		= data.to(device)
-				out 		= model(data.x, data.edge_index, data.batch)
-				pred 		= out.argmax(dim=1)
-				correct	+= (pred == data.y).sum().item()
-				total 	+= data.y.size(0)
-		val_acc = correct / total if total > 0 else 0
+			if args.use_roc_auc:
+				from sklearn.metrics import roc_auc_score
+				all_probs = []
+				all_targets = []
+				for data in val_loader:
+					data = data.to(device)
+					data.y = data.y.long()
+					out = model(data.x, data.edge_index, data.batch)
+					probs = torch.softmax(out, dim=1)[:, 1].detach().cpu().numpy()
+					targets = data.y.cpu().numpy()
+					all_probs.extend(probs)
+					all_targets.extend(targets)
+				val_acc = roc_auc_score(all_targets, all_probs) if len(set(all_targets)) > 1 else 0.0
+			else:
+				correct = 0
+				total = 0
+				for data in val_loader:
+					data = data.to(device)
+					data.y = data.y.long()  # Convert labels to LongTensor
+					out = model(data.x, data.edge_index, data.batch)
+					pred = out.argmax(dim=1)
+					correct += (pred == data.y).sum().item()
+					total += data.y.size(0)
+				val_acc = correct / total if total > 0 else 0
 		if val_acc > best_val_acc:
 			best_epoch = epoch
 			best_val_acc = val_acc
@@ -102,7 +138,8 @@ def graph_classification(args):
 			break
 
 		if epoch % args.log_freq == 0 or epoch == args.epochs - 1:
-			print(f"Epoch {epoch:03d}: Val Acc: {val_acc:.4f} ")
+			metric_name = "Val ROC-AUC" if args.use_roc_auc else "Val Acc"
+			print(f"Epoch {epoch:03d}: Train Loss: {epoch_loss:.4f}, {metric_name}: {val_acc:.4f}")
 
 	# Load best model and evaluate on test set
 	print(f"\nBest model was saved at epoch {best_epoch} with val acc: {best_val_acc:.4f}")

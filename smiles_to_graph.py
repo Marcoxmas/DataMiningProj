@@ -11,28 +11,13 @@ def one_hot(value, choices):
 
 
 def atom_features(atom):
-    """Returns a rich atomic feature vector."""
-    atomic_number_list = list(range(1, 119))
-    hybridization_list = [
-        Chem.rdchem.HybridizationType.SP,
-        Chem.rdchem.HybridizationType.SP2,
-        Chem.rdchem.HybridizationType.SP3,
-        Chem.rdchem.HybridizationType.SP3D,
-        Chem.rdchem.HybridizationType.SP3D2,
-    ]
-    chiral_tag_list = [
-        Chem.rdchem.ChiralType.CHI_UNSPECIFIED,
-        Chem.rdchem.ChiralType.CHI_TETRAHEDRAL_CW,
-        Chem.rdchem.ChiralType.CHI_TETRAHEDRAL_CCW,
-    ]
+    """Returns a simplified atomic feature vector."""
     features = []
-    features += one_hot(atom.GetAtomicNum(), atomic_number_list)
-    features += one_hot(atom.GetDegree(), list(range(6)))
+    features.append(atom.GetAtomicNum())  # Use atomic number directly
+    features.append(atom.GetDegree())
     features.append(atom.GetFormalCharge())
-    features += one_hot(atom.GetHybridization(), hybridization_list)
     features.append(int(atom.GetIsAromatic()))
     features.append(atom.GetTotalNumHs(includeNeighbors=True))
-    features += one_hot(atom.GetChiralTag(), chiral_tag_list)
     return torch.tensor(features, dtype=torch.float)
 
 
