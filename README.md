@@ -24,6 +24,7 @@ This repository provides scripts to train, evaluate, and analyze the **KANG mode
 - **`scalability.py`** - Evaluating the computational scalability of KANG.
 - **`spline_evolution.py`** - Monitoring the evolution of spline-based activations during training.
 - **`spline_plot.py`** - Visualization of spline functions used in KANG.
+- **`smiles_to_graph.py`** - Convert SMILES strings to PyTorch Geometric graphs for molecular ML tasks.
 
 ### Training and Execution Scripts
 
