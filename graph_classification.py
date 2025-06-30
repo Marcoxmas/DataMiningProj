@@ -7,6 +7,7 @@ import torch.nn as nn
 from torch_geometric.loader import DataLoader
 from torch_geometric.datasets import TUDataset
 from toxcast_dataset import ToxCastGraphDataset
+from hiv_dataset import HIVGraphDataset
 
 from src.KANG import KANG
 from src.utils import set_seed
@@ -42,6 +43,9 @@ def graph_classification(args):
 	if args.dataset_name in ["MUTAG", "PROTEINS"]:
 		dataset_path = f'./dataset/{args.dataset_name}'
 		dataset = TUDataset(root=dataset_path, name=args.dataset_name)
+	elif args.dataset_name == "HIV":
+		dataset_path = f'./dataset/{args.dataset_name}'
+		dataset = HIVGraphDataset(root=dataset_path)
 	else:
 		dataset_path = f'./dataset/TOXCAST/{args.dataset_name}'
 		dataset = ToxCastGraphDataset(root=dataset_path, target_column=args.dataset_name)
