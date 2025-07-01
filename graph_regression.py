@@ -9,6 +9,7 @@ from torch_geometric.loader import DataLoader
 from torch_geometric.datasets import TUDataset
 from toxcast_dataset import ToxCastGraphDataset
 from hiv_dataset import HIVGraphDataset
+from qm9_dataset import QM9GraphDataset
 
 from src.KANG_regression import KANG
 from src.utils import set_seed
@@ -22,7 +23,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def get_args():
 	parser = argparse.ArgumentParser(description="GKAN - Graph Regression Example")
-	parser.add_argument("--dataset_name", type=str, default="MUTAG", help="Dataset name")
+	parser.add_argument("--dataset_name", type=str, default="QM9", help="Dataset name")
+	parser.add_argument("--target_column", type=str, default="mu", help="Target column for QM9 dataset (mu, alpha, homo, lumo, etc.)")
 	parser.add_argument("--epochs", type=int, default=1000, help="Training epochs")
 	parser.add_argument("--patience", type=int, default=300, help="Early stopping patience")
 	parser.add_argument("--lr", type=float, default=0.004, help="Learning rate")
@@ -38,15 +40,11 @@ def get_args():
 	return parser.parse_args()
 
 def graph_regression(args):
-	if args.dataset_name in ["MUTAG", "PROTEINS"]:
-		dataset_path = f'./dataset/{args.dataset_name}'
-		dataset = TUDataset(root=dataset_path, name=args.dataset_name)
-	elif args.dataset_name == "HIV":
-		dataset_path = f'./dataset/{args.dataset_name}'
-		dataset = HIVGraphDataset(root=dataset_path)
-	else:
-		dataset_path = f'./dataset/TOXCAST/{args.dataset_name}'
-		dataset = ToxCastGraphDataset(root=dataset_path, target_column=args.dataset_name)
+	if args.dataset_name == "QM9":
+		dataset_path = f'./dataset/{args.dataset_name}_{args.target_column}'
+		dataset = QM9GraphDataset(root=dataset_path, target_column=args.target_column)
+		print(f"QM9 dataset loaded with target column: {args.target_column}")
+		dataset.print_dataset_info()
 
 	shuffled_dataset = dataset.shuffle()
 	train_size = int(0.8 * len(dataset))
