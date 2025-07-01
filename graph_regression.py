@@ -1,6 +1,8 @@
 import argparse
+from email import parser
 from tqdm.auto import tqdm
 import matplotlib.pyplot as plt
+from torch.nn.functional import l1_loss
 import math
 
 import torch
@@ -10,6 +12,7 @@ from torch_geometric.datasets import TUDataset
 from toxcast_dataset import ToxCastGraphDataset
 from hiv_dataset import HIVGraphDataset
 from qm9_dataset import QM9GraphDataset
+from qm8_dataset import QM8GraphDataset
 
 from src.KANG_regression import KANG
 from src.utils import set_seed
@@ -24,7 +27,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def get_args():
 	parser = argparse.ArgumentParser(description="GKAN - Graph Regression Example")
 	parser.add_argument("--dataset_name", type=str, default="QM9", help="Dataset name")
-	parser.add_argument("--target_column", type=str, default="mu", help="Target column for QM9 dataset (mu, alpha, homo, lumo, etc.)")
+	parser.add_argument("--target_column", type=str, default="mu", help="Target column")
 	parser.add_argument("--epochs", type=int, default=1000, help="Training epochs")
 	parser.add_argument("--patience", type=int, default=300, help="Early stopping patience")
 	parser.add_argument("--lr", type=float, default=0.004, help="Learning rate")
@@ -44,6 +47,12 @@ def graph_regression(args):
 		dataset_path = f'./dataset/{args.dataset_name}_{args.target_column}'
 		dataset = QM9GraphDataset(root=dataset_path, target_column=args.target_column)
 		print(f"QM9 dataset loaded with target column: {args.target_column}")
+		dataset.print_dataset_info()	
+
+	elif args.dataset_name == "QM8":
+		dataset_path = f'./dataset/{args.dataset_name}_{args.target_column}'
+		dataset = QM8GraphDataset(root=dataset_path, target_column=args.target_column)
+		print(f"QM8 dataset loaded with target column: {args.target_column}")
 		dataset.print_dataset_info()
 
 	shuffled_dataset = dataset.shuffle()
@@ -93,16 +102,20 @@ def graph_regression(args):
 		# Validation
 		model.eval()
 		total_loss = 0
+		total_mae = 0
 		with torch.no_grad():
 			for data in val_loader:
 				data = data.to(device)
-				out = model(data.x, data.edge_index, data.batch).view(-1)
-				loss = criterion(out, data.y.view(-1).float())
-				total_loss += loss.item()
+				preds = model(data.x, data.edge_index, data.batch).view(-1)
+				targets = data.y.view(-1).float()
+				total_loss += criterion(preds, targets).item()
+				total_mae += torch.abs(preds - targets).mean().item()
 		avg_val_loss = total_loss / len(val_loader)
+		avg_val_mae = total_mae / len(val_loader)
 
-		if avg_val_loss < best_val_score:
-			best_val_score = avg_val_loss
+
+		if avg_val_mae < best_val_score:
+			best_val_score = avg_val_mae
 			best_epoch = epoch
 			torch.save(model.state_dict(), best_model_path)
 			early_stop_counter = 0
@@ -112,22 +125,26 @@ def graph_regression(args):
 			break
 
 		if epoch % args.log_freq == 0 or epoch == args.epochs - 1:
-			print(f"Epoch {epoch:03d}: Train Loss: {epoch_loss:.4f}, Val MSE: {avg_val_loss:.4f}, Val RMSE: {math.sqrt(avg_val_loss):.4f}")
-
+			print(f"\nBest model was saved at epoch {best_epoch} with val MAE: {best_val_score:.4f}")
+	
 	print(f"\nBest model was saved at epoch {best_epoch} with val RMSE: {math.sqrt(best_val_score):.4f}")
 	model.load_state_dict(torch.load(best_model_path))
 	model.eval()
 
 	# Test Evaluation
 	total_loss = 0
+	total_mae = 0
 	with torch.no_grad():
 		for data in test_loader:
 			data = data.to(device)
-			out = model(data.x, data.edge_index, data.batch).view(-1)
-			loss = criterion(out, data.y.view(-1).float())
-			total_loss += loss.item()
+			preds = model(data.x, data.edge_index, data.batch).view(-1)
+			targets = data.y.view(-1).float()
+			total_loss += criterion(preds, targets).item()
+			total_mae += torch.abs(preds - targets).mean().item()
 	test_rmse = math.sqrt(total_loss / len(test_loader))
-	print(f'Test RMSE: {test_rmse:.4f}')
+	test_mae = total_mae / len(test_loader)
+	print(f'Test RMSE: {test_rmse:.4f}, Test MAE: {test_mae:.4f}')
+
 
 def main():
 	args = get_args()
