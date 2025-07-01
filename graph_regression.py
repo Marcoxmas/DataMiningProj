@@ -125,9 +125,9 @@ def graph_regression(args):
 			break
 
 		if epoch % args.log_freq == 0 or epoch == args.epochs - 1:
-			print(f"\nBest model was saved at epoch {best_epoch} with val MAE: {best_val_score:.4f}")
-	
-	print(f"\nBest model was saved at epoch {best_epoch} with val RMSE: {math.sqrt(best_val_score):.4f}")
+			print(f"Epoch {epoch:03d}: Train Loss: {epoch_loss:.4f}, Val MSE: {avg_val_loss:.4f}, Val RMSE: {math.sqrt(avg_val_loss):.4f}, Val MAE: {avg_val_mae:.4f}")
+
+	print(f"\nBest model was saved at epoch {best_epoch} with val MAE: {best_val_score:.4f}")
 	model.load_state_dict(torch.load(best_model_path))
 	model.eval()
 
