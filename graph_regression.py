@@ -143,10 +143,12 @@ def graph_regression(args):
 	test_mae = total_mae / len(test_loader)
 	print(f'Test RMSE: {test_rmse:.4f}, Test MAE: {test_mae:.4f}')
 
+	return best_val_score
+
 
 def main():
-	args = get_args()
-	graph_regression(args)
+    args = get_args()
+    graph_regression(args)
 
 if __name__ == "__main__":
 	main()

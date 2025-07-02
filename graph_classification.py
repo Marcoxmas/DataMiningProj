@@ -195,9 +195,11 @@ def graph_classification(args):
 	# plt.savefig("./experiments/graph_classification/images/val_plot.png", dpi=300)
 	# plt.close(fig)
 
+	return best_val_acc
+
 def main():
-	args = get_args()
-	graph_classification(args)
+    args = get_args()
+    graph_classification(args)
 
 if __name__ == "__main__":
 	main()
