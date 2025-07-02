@@ -8,9 +8,6 @@ import math
 import torch
 import torch.nn as nn
 from torch_geometric.loader import DataLoader
-from torch_geometric.datasets import TUDataset
-from toxcast_dataset import ToxCastGraphDataset
-from hiv_dataset import HIVGraphDataset
 from qm9_dataset import QM9GraphDataset
 from qm8_dataset import QM8GraphDataset
 
@@ -65,7 +62,7 @@ def graph_regression(args):
 	val_loader = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False)
 	test_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
 
-	criterion = nn.MSELoss()
+	criterion = nn.L1Loss()
 
 	# Modify output_dim to 1 for regression
 	model = KANG(
@@ -98,6 +95,7 @@ def graph_regression(args):
 			epoch_loss += loss.item()
 			loss.backward()
 			optimizer.step()
+		epoch_loss /= len(train_loader)
 
 		# Validation
 		model.eval()
