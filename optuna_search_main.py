@@ -18,20 +18,20 @@ def optuna_search(task_type, dataset_name, target_column):
         args = argparse.Namespace()
         args.dataset_name = dataset_name
         args.target_column = target_column
-        args.lr = trial.suggest_float("lr", 1e-4, 1e-2, log=True)
-        args.wd = trial.suggest_float("wd", 1e-6, 1e-2, log=True)
+        args.lr = trial.suggest_float("lr", 0.0025, 0.0035)
+        args.wd = trial.suggest_float("wd", 8e-5, 3e-4)
         args.hidden_channels = trial.suggest_categorical("hidden_channels", [32, 64, 128])
-        args.layers = trial.suggest_int("layers", 1, 4)
-        args.dropout = trial.suggest_float("dropout", 0.0, 0.5)
-        args.num_grids = trial.suggest_int("num_grids", 3, 12)
-        args.batch_size = trial.suggest_categorical("batch_size", [32, 64, 128])
+        args.layers = trial.suggest_int("layers", 1, 3)
+        args.dropout = trial.suggest_float("dropout", 0.0001, 0.01)
+        args.num_grids = trial.suggest_categorical("num_grids", [10, 12])
+        args.batch_size = trial.suggest_categorical("batch_size", [128])
         args.grid_min = -10
         args.grid_max = 3
-        args.epochs = 300
-        args.patience = 100
+        args.epochs = 100
+        args.patience = 20
         args.log_freq = 50
         args.use_weighted_loss = False
-        args.use_roc_auc = False
+        args.use_roc_auc = True
 
         if task_type == "classification":
             print("Running classification with:", args)
@@ -43,7 +43,7 @@ def optuna_search(task_type, dataset_name, target_column):
             return best_val_score  # minimize MAE
 
     study = optuna.create_study(direction="minimize" if task_type == "regression" else "maximize")
-    study.optimize(objective, n_trials=20)
+    study.optimize(objective, n_trials=10)
 
     os.makedirs("experiments/hparam_search", exist_ok=True)
     with open("experiments/hparam_search/best_trial.json", "w") as f:
