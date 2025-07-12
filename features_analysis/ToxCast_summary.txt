@@ -1,0 +1,14 @@
+FEATURE ANALYSIS SUMMARY: ToxCast
+==================================================
+
+Dataset: ToxCast
+Samples analyzed: 1000
+Total nodes: 18946
+Features per node: 123
+
+GLOBAL STATISTICS:
+  Minimum value: 0.000000
+  Maximum value: 1.000000
+  Mean value: 0.044189
+  Standard deviation: 0.204440
+  Value range: [0.000000, 1.000000]

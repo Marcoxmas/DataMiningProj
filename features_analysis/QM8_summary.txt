@@ -1,0 +1,14 @@
+FEATURE ANALYSIS SUMMARY: QM8
+==================================================
+
+Dataset: QM8
+Samples analyzed: 1000
+Total nodes: 5987
+Features per node: 123
+
+GLOBAL STATISTICS:
+  Minimum value: 0.000000
+  Maximum value: 1.000000
+  Mean value: 0.043205
+  Standard deviation: 0.202329
+  Value range: [0.000000, 1.000000]

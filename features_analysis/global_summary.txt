@@ -1,0 +1,28 @@
+GLOBAL FEATURE ANALYSIS SUMMARY
+==================================================
+
+Analysis of molecular datasets: QM8, QM9, HIV, and ToxCast
+Total datasets analyzed: 4
+
+DATASET COMPARISON TABLE:
+----------------------------------------------------------------------------------------------------
+Dataset         Samples  Nodes    Features  Min      Max      Mean     Std     
+----------------------------------------------------------------------------------------------------
+QM9             1000     5969     123       0.0000   1.0000   0.0432   0.2022  
+QM8             1000     5987     123       0.0000   1.0000   0.0432   0.2023  
+HIV             1000     21086    123       0.0000   1.0000   0.0442   0.2044  
+ToxCast         1000     18946    123       0.0000   1.0000   0.0442   0.2044  
+----------------------------------------------------------------------------------------------------
+
+OVERALL STATISTICS ACROSS ALL DATASETS:
+  Minimum of all minimums: 0.000000
+  Maximum of all maximums: 1.000000
+  Average of all means: 0.043686
+  Average of all standard deviations: 0.203358
+  Overall range: [0.000000, 1.000000]
+
+KEY OBSERVATIONS:
+- All molecular datasets use the same feature engineering from smiles_to_graph.py
+- Features are normalized/clamped to [0, 1] range
+- Molecular datasets (QM8, QM9, HIV, ToxCast) have consistent feature dimensionality
+- Statistical distributions are very similar across molecular datasets
