@@ -1,0 +1,239 @@
+(.venv) PS C:\Users\Marco\Documents\GitHub\DataMiningProj> python .\optuna_search_main.py --task classification --dataset_name HIV
+[I 2025-07-12 20:03:12,084] A new study created in memory with name: no-name-666bd85c-1d37-4108-b20f-0fab1899b942
+Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.0010237452754437123, wd=2.4707654627702884e-05, hidden_channels=32, layers=2, dropout=0.3088813834817
+338, num_grids=12, batch_size=64, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                          Epoch 000: Train Loss: 81.2507, Val ROC-AUC: 0.5538
+Epoch 015: Train Loss: 74.1246, Val ROC-AUC: 0.6405
+Epoch 030: Train Loss: 71.5573, Val ROC-AUC: 0.7045
+Epoch 045: Train Loss: 70.1524, Val ROC-AUC: 0.7566
+Epoch 060: Train Loss: 69.1664, Val ROC-AUC: 0.7435
+Epoch 075: Train Loss: 68.1309, Val ROC-AUC: 0.7395
+
+Best model was saved at epoch 53 with val acc: 0.7692
+Test Loss: Test Acc: 0.9633
+Test ROC-AUC: 0.6909
+[I 2025-07-12 20:11:30,117] Trial 0 finished with value: 0.7691816753771524 and parameters: {'lr': 0.0010237452754437123, 'wd': 2.4707654627702884e-05, 'hidden_channels': 32, 'layers': 
+2, 'dropout': 0.3088813834817338, 'num_grids': 12, 'batch_size': 64}. Best is trial 0 with value: 0.7691816753771524.                                                                    Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.0019485729922804698, wd=0.00018306283627619302, hidden_channels=64, layers=3, dropout=0.1634766547930
+182, num_grids=10, batch_size=256, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                         Epoch 000: Train Loss: 20.5008, Val ROC-AUC: 0.5586
+Epoch 015: Train Loss: 17.8890, Val ROC-AUC: 0.7185
+Epoch 030: Train Loss: 17.3203, Val ROC-AUC: 0.7520
+Epoch 045: Train Loss: 16.7182, Val ROC-AUC: 0.7883
+Epoch 060: Train Loss: 16.6539, Val ROC-AUC: 0.7886
+Epoch 075: Train Loss: 16.3461, Val ROC-AUC: 0.7846
+Epoch 090: Train Loss: 16.3300, Val ROC-AUC: 0.7914
+Epoch 105: Train Loss: 16.2086, Val ROC-AUC: 0.7917
+Epoch 120: Train Loss: 15.9789, Val ROC-AUC: 0.7885
+Epoch 135: Train Loss: 15.9118, Val ROC-AUC: 0.7935
+Epoch 149: Train Loss: 15.8804, Val ROC-AUC: 0.7981
+
+Best model was saved at epoch 140 with val acc: 0.8152
+Test Loss: Test Acc: 0.9623
+Test ROC-AUC: 0.7029
+[I 2025-07-12 20:18:49,135] Trial 1 finished with value: 0.8152302935150654 and parameters: {'lr': 0.0019485729922804698, 'wd': 0.00018306283627619302, 'hidden_channels': 64, 'layers': 
+3, 'dropout': 0.1634766547930182, 'num_grids': 10, 'batch_size': 256}. Best is trial 1 with value: 0.8152302935150654.                                                                   Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.005820936343196437, wd=1.924702250587852e-05, hidden_channels=64, layers=2, dropout=0.465242541710692
+8, num_grids=10, batch_size=128, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                           Epoch 000: Train Loss: 39.5486, Val ROC-AUC: 0.4998
+Epoch 015: Train Loss: 38.7760, Val ROC-AUC: 0.6401
+Epoch 030: Train Loss: 37.9545, Val ROC-AUC: 0.7125
+Epoch 045: Train Loss: 39.3594, Val ROC-AUC: 0.6092
+
+Best model was saved at epoch 30 with val acc: 0.7125
+Test Loss: Test Acc: 0.9640
+Test ROC-AUC: 0.7196
+[I 2025-07-12 20:22:35,908] Trial 2 finished with value: 0.7124822892309832 and parameters: {'lr': 0.005820936343196437, 'wd': 1.924702250587852e-05, 'hidden_channels': 64, 'layers': 2,
+ 'dropout': 0.4652425417106928, 'num_grids': 10, 'batch_size': 128}. Best is trial 1 with value: 0.8152302935150654.                                                                     Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.0013309777193371392, wd=4.2534364127457824e-05, hidden_channels=128, layers=3, dropout=0.345804957979
+18454, num_grids=14, batch_size=128, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                       Epoch 000: Train Loss: 40.3507, Val ROC-AUC: 0.4995
+Epoch 015: Train Loss: 38.5409, Val ROC-AUC: 0.6278
+Epoch 030: Train Loss: 37.3103, Val ROC-AUC: 0.6479
+Epoch 045: Train Loss: 37.1114, Val ROC-AUC: 0.6526
+Epoch 060: Train Loss: 36.3006, Val ROC-AUC: 0.7016
+Epoch 075: Train Loss: 36.2373, Val ROC-AUC: 0.6671
+Epoch 090: Train Loss: 35.8449, Val ROC-AUC: 0.7082
+Epoch 105: Train Loss: 35.6981, Val ROC-AUC: 0.7140
+Epoch 120: Train Loss: 35.5228, Val ROC-AUC: 0.7308
+
+Best model was saved at epoch 98 with val acc: 0.7346
+Test Loss: Test Acc: 0.9655
+Test ROC-AUC: 0.7528
+[I 2025-07-12 20:31:24,530] Trial 3 finished with value: 0.7345901936419179 and parameters: {'lr': 0.0013309777193371392, 'wd': 4.2534364127457824e-05, 'hidden_channels': 128, 'layers':
+ 3, 'dropout': 0.34580495797918454, 'num_grids': 14, 'batch_size': 128}. Best is trial 1 with value: 0.8152302935150654.                                                                 Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.009814265707523598, wd=0.0009452873840701948, hidden_channels=256, layers=2, dropout=0.18697512853868
+542, num_grids=14, batch_size=256, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                         Epoch 000: Train Loss: 21.0582, Val ROC-AUC: 0.5428
+Epoch 015: Train Loss: 20.2827, Val ROC-AUC: 0.4294
+Epoch 030: Train Loss: 19.9067, Val ROC-AUC: 0.5574
+
+Best model was saved at epoch 14 with val acc: 0.6822
+Test Loss: Test Acc: 0.9628
+Test ROC-AUC: 0.6350
+[I 2025-07-12 20:33:48,541] Trial 4 finished with value: 0.6821726590501792 and parameters: {'lr': 0.009814265707523598, 'wd': 0.0009452873840701948, 'hidden_channels': 256, 'layers': 2
+, 'dropout': 0.18697512853868542, 'num_grids': 14, 'batch_size': 256}. Best is trial 1 with value: 0.8152302935150654.                                                                   Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.0015063662074863292, wd=5.121376456146525e-05, hidden_channels=128, layers=5, dropout=0.3817988254830
+028, num_grids=10, batch_size=64, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                          Epoch 000: Train Loss: 77.7022, Val ROC-AUC: 0.4469
+Epoch 015: Train Loss: 76.1799, Val ROC-AUC: 0.5500
+Epoch 030: Train Loss: 75.6920, Val ROC-AUC: 0.5306
+Epoch 045: Train Loss: 75.9252, Val ROC-AUC: 0.4131
+Epoch 060: Train Loss: 75.6546, Val ROC-AUC: 0.5635
+Epoch 075: Train Loss: 75.7856, Val ROC-AUC: 0.5003
+Epoch 090: Train Loss: 76.1819, Val ROC-AUC: 0.5378
+Epoch 105: Train Loss: 76.4221, Val ROC-AUC: 0.5337
+
+Best model was saved at epoch 84 with val acc: 0.6157
+Test Loss: Test Acc: 0.9594
+Test ROC-AUC: 0.5866
+[I 2025-07-12 20:50:20,068] Trial 5 finished with value: 0.6156872066742218 and parameters: {'lr': 0.0015063662074863292, 'wd': 5.121376456146525e-05, 'hidden_channels': 128, 'layers': 
+5, 'dropout': 0.3817988254830028, 'num_grids': 10, 'batch_size': 64}. Best is trial 1 with value: 0.8152302935150654.                                                                    Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.008809433687685282, wd=0.0006874002329677978, hidden_channels=32, layers=2, dropout=0.100794083230869
+46, num_grids=10, batch_size=256, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                          Epoch 000: Train Loss: 20.8033, Val ROC-AUC: 0.5849
+Epoch 015: Train Loss: 19.7961, Val ROC-AUC: 0.5162
+
+Best model was saved at epoch 0 with val acc: 0.5849
+Test Loss: Test Acc: 0.9657
+Test ROC-AUC: 0.6345
+[I 2025-07-12 20:51:44,882] Trial 6 finished with value: 0.5849221335059704 and parameters: {'lr': 0.008809433687685282, 'wd': 0.0006874002329677978, 'hidden_channels': 32, 'layers': 2,
+ 'dropout': 0.10079408323086946, 'num_grids': 10, 'batch_size': 256}. Best is trial 1 with value: 0.8152302935150654.                                                                    Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.002417539020951651, wd=0.00022454620117994933, hidden_channels=32, layers=3, dropout=0.27983095104594
+54, num_grids=16, batch_size=128, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                          Epoch 000: Train Loss: 41.1345, Val ROC-AUC: 0.5373
+Epoch 015: Train Loss: 39.5992, Val ROC-AUC: 0.5043
+Epoch 030: Train Loss: 39.2212, Val ROC-AUC: 0.5671
+Epoch 045: Train Loss: 39.3620, Val ROC-AUC: 0.3949
+Epoch 060: Train Loss: 39.4343, Val ROC-AUC: 0.6522
+Epoch 075: Train Loss: 39.3589, Val ROC-AUC: 0.5231
+
+Best model was saved at epoch 60 with val acc: 0.6522
+Test Loss: Test Acc: 0.9691
+Test ROC-AUC: 0.5891
+[I 2025-07-12 20:57:46,049] Trial 7 finished with value: 0.6522373580506574 and parameters: {'lr': 0.002417539020951651, 'wd': 0.00022454620117994933, 'hidden_channels': 32, 'layers': 3
+, 'dropout': 0.2798309510459454, 'num_grids': 16, 'batch_size': 128}. Best is trial 1 with value: 0.8152302935150654.                                                                    Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.004383598632222345, wd=0.00017362785611835105, hidden_channels=64, layers=2, dropout=0.23061659514486
+724, num_grids=16, batch_size=64, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                          Epoch 000: Train Loss: 81.0603, Val ROC-AUC: 0.5176
+Epoch 015: Train Loss: 79.0249, Val ROC-AUC: 0.6930
+Epoch 030: Train Loss: 79.3567, Val ROC-AUC: 0.5099
+Epoch 045: Train Loss: 79.3519, Val ROC-AUC: 0.6298
+
+Best model was saved at epoch 17 with val acc: 0.7106
+Test Loss: Test Acc: 0.9674
+Test ROC-AUC: 0.6387
+[I 2025-07-12 21:02:24,466] Trial 8 finished with value: 0.7106290691306729 and parameters: {'lr': 0.004383598632222345, 'wd': 0.00017362785611835105, 'hidden_channels': 64, 'layers': 2
+, 'dropout': 0.23061659514486724, 'num_grids': 16, 'batch_size': 64}. Best is trial 1 with value: 0.8152302935150654.                                                                    Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.003468718702590295, wd=6.486963724088231e-05, hidden_channels=128, layers=3, dropout=0.37548620746801
+72, num_grids=12, batch_size=128, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                          Epoch 000: Train Loss: 40.0407, Val ROC-AUC: 0.5251
+Epoch 015: Train Loss: 39.6598, Val ROC-AUC: 0.5257
+Epoch 030: Train Loss: 39.3981, Val ROC-AUC: 0.4301
+
+Best model was saved at epoch 1 with val acc: 0.6462
+Test Loss: Test Acc: 0.9686
+Test ROC-AUC: 0.6398
+[I 2025-07-12 21:04:37,246] Trial 9 finished with value: 0.6461744420309351 and parameters: {'lr': 0.003468718702590295, 'wd': 6.486963724088231e-05, 'hidden_channels': 128, 'layers': 3
+, 'dropout': 0.3754862074680172, 'num_grids': 12, 'batch_size': 128}. Best is trial 1 with value: 0.8152302935150654.                                                                    Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.0022281476759647115, wd=0.00029907678524254054, hidden_channels=64, layers=5, dropout=0.1048811969941
+83, num_grids=10, batch_size=256, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                          Epoch 000: Train Loss: 21.2048, Val ROC-AUC: 0.5400
+Epoch 015: Train Loss: 19.5905, Val ROC-AUC: 0.6765
+Epoch 030: Train Loss: 19.6474, Val ROC-AUC: 0.6851
+Epoch 045: Train Loss: 19.5302, Val ROC-AUC: 0.6138
+
+Best model was saved at epoch 27 with val acc: 0.6906
+Test Loss: Test Acc: 0.9652
+Test ROC-AUC: 0.6780
+[I 2025-07-12 21:07:51,788] Trial 10 finished with value: 0.690633306751728 and parameters: {'lr': 0.0022281476759647115, 'wd': 0.00029907678524254054, 'hidden_channels': 64, 'layers': 
+5, 'dropout': 0.104881196994183, 'num_grids': 10, 'batch_size': 256}. Best is trial 1 with value: 0.8152302935150654.                                                                    Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.0012162435631326892, wd=1.23414568316166e-05, hidden_channels=32, layers=4, dropout=0.197076555734263
+25, num_grids=12, batch_size=64, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                           Epoch 000: Train Loss: 82.0215, Val ROC-AUC: 0.5151
+Epoch 015: Train Loss: 78.1900, Val ROC-AUC: 0.5464
+Epoch 030: Train Loss: 77.9675, Val ROC-AUC: 0.4874
+
+Best model was saved at epoch 5 with val acc: 0.5975
+Test Loss: Test Acc: 0.9608
+Test ROC-AUC: 0.5644
+[I 2025-07-12 21:12:31,855] Trial 11 finished with value: 0.5974788716308819 and parameters: {'lr': 0.0012162435631326892, 'wd': 1.23414568316166e-05, 'hidden_channels': 32, 'layers': 4
+, 'dropout': 0.19707655573426325, 'num_grids': 12, 'batch_size': 64}. Best is trial 1 with value: 0.8152302935150654.                                                                    Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.0019101723170462687, wd=0.0001051839340260395, hidden_channels=256, layers=4, dropout=0.2796085793596
+6127, num_grids=12, batch_size=256, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                        Epoch 000: Train Loss: 20.2382, Val ROC-AUC: 0.5861
+Epoch 015: Train Loss: 19.8007, Val ROC-AUC: 0.4081
+Epoch 030: Train Loss: 19.5318, Val ROC-AUC: 0.6238
+Epoch 045: Train Loss: 19.5326, Val ROC-AUC: 0.6819
+Epoch 060: Train Loss: 18.4171, Val ROC-AUC: 0.7188
+Epoch 075: Train Loss: 18.4358, Val ROC-AUC: 0.7004
+Epoch 090: Train Loss: 18.2416, Val ROC-AUC: 0.7053
+Epoch 105: Train Loss: 17.9022, Val ROC-AUC: 0.7092
+Epoch 120: Train Loss: 17.8166, Val ROC-AUC: 0.7327
+Epoch 135: Train Loss: 17.4497, Val ROC-AUC: 0.7316
+Epoch 149: Train Loss: 17.5622, Val ROC-AUC: 0.7387
+
+Best model was saved at epoch 141 with val acc: 0.7562
+Test Loss: Test Acc: 0.9638
+Test ROC-AUC: 0.7265
+[I 2025-07-12 21:25:23,669] Trial 12 finished with value: 0.7561662323567085 and parameters: {'lr': 0.0019101723170462687, 'wd': 0.0001051839340260395, 'hidden_channels': 256, 'layers':
+ 4, 'dropout': 0.27960857935966127, 'num_grids': 12, 'batch_size': 256}. Best is trial 1 with value: 0.8152302935150654.                                                                 Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.0011240836671143706, wd=2.560201525424918e-05, hidden_channels=64, layers=3, dropout=0.46709211485536
+883, num_grids=12, batch_size=64, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                          Epoch 000: Train Loss: 82.1390, Val ROC-AUC: 0.4323
+Epoch 015: Train Loss: 78.9650, Val ROC-AUC: 0.4787
+Epoch 030: Train Loss: 79.0658, Val ROC-AUC: 0.4793
+Epoch 045: Train Loss: 78.4316, Val ROC-AUC: 0.5136
+
+Best model was saved at epoch 19 with val acc: 0.6289
+Test Loss: Test Acc: 0.9667
+Test ROC-AUC: 0.6106
+[I 2025-07-12 21:31:08,652] Trial 13 finished with value: 0.6289076161590216 and parameters: {'lr': 0.0011240836671143706, 'wd': 2.560201525424918e-05, 'hidden_channels': 64, 'layers': 
+3, 'dropout': 0.46709211485536883, 'num_grids': 12, 'batch_size': 64}. Best is trial 1 with value: 0.8152302935150654.                                                                   Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.001796726950849369, wd=0.0004580022699860055, hidden_channels=32, layers=4, dropout=0.156315068479122
+13, num_grids=10, batch_size=256, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                          Epoch 000: Train Loss: 21.1633, Val ROC-AUC: 0.5118
+Epoch 015: Train Loss: 18.5356, Val ROC-AUC: 0.6557
+Epoch 030: Train Loss: 17.8984, Val ROC-AUC: 0.6754
+Epoch 045: Train Loss: 17.6305, Val ROC-AUC: 0.6847
+Epoch 060: Train Loss: 17.1727, Val ROC-AUC: 0.6602
+
+Best model was saved at epoch 43 with val acc: 0.7103
+Test Loss: Test Acc: 0.9657
+Test ROC-AUC: 0.7165
+[I 2025-07-12 21:34:53,744] Trial 14 finished with value: 0.7103202470886628 and parameters: {'lr': 0.001796726950849369, 'wd': 0.0004580022699860055, 'hidden_channels': 32, 'layers': 4
+, 'dropout': 0.15631506847912213, 'num_grids': 10, 'batch_size': 256}. Best is trial 1 with value: 0.8152302935150654.                                                                   Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.0010021868578689763, wd=0.00011464488205464099, hidden_channels=64, layers=2, dropout=0.3352758675439
+2946, num_grids=12, batch_size=64, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                         Epoch 000: Train Loss: 79.5617, Val ROC-AUC: 0.5571
+Epoch 015: Train Loss: 71.8157, Val ROC-AUC: 0.6643
+Epoch 030: Train Loss: 69.9142, Val ROC-AUC: 0.7286
+Epoch 045: Train Loss: 69.3178, Val ROC-AUC: 0.7359
+Epoch 060: Train Loss: 68.1470, Val ROC-AUC: 0.7189
+Epoch 075: Train Loss: 68.4486, Val ROC-AUC: 0.7336
+Epoch 090: Train Loss: 67.8148, Val ROC-AUC: 0.7325
+
+Best model was saved at epoch 64 with val acc: 0.7625
+Test Loss: Test Acc: 0.9667
+Test ROC-AUC: 0.7477
+[I 2025-07-12 21:44:04,431] Trial 15 finished with value: 0.7625363739878543 and parameters: {'lr': 0.0010021868578689763, 'wd': 0.00011464488205464099, 'hidden_channels': 64, 'layers':
+ 2, 'dropout': 0.33527586754392946, 'num_grids': 12, 'batch_size': 64}. Best is trial 1 with value: 0.8152302935150654.                                                                  Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.0031096257907289827, wd=1.0387540823027637e-05, hidden_channels=32, layers=3, dropout=0.2450164228310
+0833, num_grids=14, batch_size=256, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                        Epoch 000: Train Loss: 20.2761, Val ROC-AUC: 0.4642
+Epoch 015: Train Loss: 18.8993, Val ROC-AUC: 0.5212
+Epoch 030: Train Loss: 18.4651, Val ROC-AUC: 0.6276
+Epoch 045: Train Loss: 18.1936, Val ROC-AUC: 0.6336
+Epoch 060: Train Loss: 18.1222, Val ROC-AUC: 0.6407
+
+Best model was saved at epoch 36 with val acc: 0.6886
+Test Loss: Test Acc: 0.9635
+Test ROC-AUC: 0.7037
+[I 2025-07-12 21:47:15,692] Trial 16 finished with value: 0.6886062533121357 and parameters: {'lr': 0.0031096257907289827, 'wd': 1.0387540823027637e-05, 'hidden_channels': 32, 'layers':
+ 3, 'dropout': 0.24501642283100833, 'num_grids': 14, 'batch_size': 256}. Best is trial 1 with value: 0.8152302935150654.                                                                 Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.0015657004515001692, wd=2.8727128500263342e-05, hidden_channels=256, layers=2, dropout=0.416671147289
+6974, num_grids=16, batch_size=64, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                         Epoch 000: Train Loss: 80.0917, Val ROC-AUC: 0.5746
+Epoch 015: Train Loss: 77.7207, Val ROC-AUC: 0.6351
+Epoch 030: Train Loss: 75.6581, Val ROC-AUC: 0.6227
+Epoch 045: Train Loss: 75.0624, Val ROC-AUC: 0.6535
+Epoch 060: Train Loss: 74.8658, Val ROC-AUC: 0.6687
+Epoch 075: Train Loss: 74.7747, Val ROC-AUC: 0.6519
+
+Best model was saved at epoch 55 with val acc: 0.6808
+Test Loss: Test Acc: 0.9633
+Test ROC-AUC: 0.7328
+[I 2025-07-12 21:55:36,849] Trial 17 finished with value: 0.6808137107548431 and parameters: {'lr': 0.0015657004515001692, 'wd': 2.8727128500263342e-05, 'hidden_channels': 256, 'layers'
+: 2, 'dropout': 0.4166711472896974, 'num_grids': 16, 'batch_size': 64}. Best is trial 1 with value: 0.8152302935150654.                                                                  Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.0024128890337134002, wd=0.00015484079125529254, hidden_channels=64, layers=3, dropout=0.2942376792826
+059, num_grids=12, batch_size=64, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                          Epoch 000: Train Loss: 79.6757, Val ROC-AUC: 0.4072
+Epoch 015: Train Loss: 78.2953, Val ROC-AUC: 0.5606
+Epoch 030: Train Loss: 77.9938, Val ROC-AUC: 0.5479
+Epoch 045: Train Loss: 78.2150, Val ROC-AUC: 0.4645
+
+Best model was saved at epoch 27 with val acc: 0.6281
+Test Loss: Test Acc: 0.9635
+Test ROC-AUC: 0.5969
+[I 2025-07-12 22:02:15,061] Trial 18 finished with value: 0.6281314151102138 and parameters: {'lr': 0.0024128890337134002, 'wd': 0.00015484079125529254, 'hidden_channels': 64, 'layers':
+ 3, 'dropout': 0.2942376792826059, 'num_grids': 12, 'batch_size': 64}. Best is trial 1 with value: 0.8152302935150654.                                                                   Running classification with: Namespace(dataset_name='HIV', target_column='mu', lr=0.003129588111596232, wd=7.343922882293011e-05, hidden_channels=32, layers=4, dropout=0.157248734873445
+76, num_grids=10, batch_size=256, grid_min=-0.1, grid_max=1.1, epochs=150, patience=30, log_freq=15, use_weighted_loss=False, use_roc_auc=True)                                          Epoch 000: Train Loss: 21.3507, Val ROC-AUC: 0.5409
+Epoch 015: Train Loss: 18.9900, Val ROC-AUC: 0.6856
+Epoch 030: Train Loss: 18.2773, Val ROC-AUC: 0.7142
+Epoch 045: Train Loss: 18.0348, Val ROC-AUC: 0.7224
+Epoch 060: Train Loss: 17.9569, Val ROC-AUC: 0.7420
+Epoch 075: Train Loss: 17.5584, Val ROC-AUC: 0.7488
+Epoch 090: Train Loss: 17.6160, Val ROC-AUC: 0.7597
+Epoch 105: Train Loss: 17.2395, Val ROC-AUC: 0.7670
+Epoch 120: Train Loss: 17.1912, Val ROC-AUC: 0.7666
+
+Best model was saved at epoch 92 with val acc: 0.7735
+Test Loss: Test Acc: 0.9698
+Test ROC-AUC: 0.7480
+[I 2025-07-12 22:08:29,005] Trial 19 finished with value: 0.7735114809394749 and parameters: {'lr': 0.003129588111596232, 'wd': 7.343922882293011e-05, 'hidden_channels': 32, 'layers': 4
+, 'dropout': 0.15724873487344576, 'num_grids': 10, 'batch_size': 256}. Best is trial 1 with value: 0.8152302935150654.                                                                   
+Best hyperparameters:
+{'lr': 0.0019485729922804698, 'wd': 0.00018306283627619302, 'hidden_channels': 64, 'layers': 3, 'dropout': 0.1634766547930182, 'num_grids': 10, 'batch_size': 256}

@@ -18,18 +18,18 @@ def optuna_search(task_type, dataset_name, target_column):
         args = argparse.Namespace()
         args.dataset_name = dataset_name
         args.target_column = target_column
-        args.lr = trial.suggest_float("lr", 0.0025, 0.0035)
-        args.wd = trial.suggest_float("wd", 8e-5, 3e-4)
-        args.hidden_channels = trial.suggest_categorical("hidden_channels", [32, 64, 128])
-        args.layers = trial.suggest_int("layers", 1, 6)
-        args.dropout = trial.suggest_float("dropout", 0.0001, 0.01)
-        args.num_grids = trial.suggest_categorical("num_grids", [10, 12])
-        args.batch_size = trial.suggest_categorical("batch_size", [128])
-        args.grid_min = -10
-        args.grid_max = 3
-        args.epochs = 100
-        args.patience = 20
-        args.log_freq = 50
+        args.lr = trial.suggest_float("lr", 0.001, 0.01, log=True)
+        args.wd = trial.suggest_float("wd", 1e-5, 1e-3, log=True)
+        args.hidden_channels = trial.suggest_categorical("hidden_channels", [32, 64, 128, 256])
+        args.layers = trial.suggest_int("layers", 1, 7)
+        args.dropout = trial.suggest_float("dropout", 0.1, 0.5)
+        args.num_grids = trial.suggest_categorical("num_grids", [10, 12, 14, 16])
+        args.batch_size = trial.suggest_categorical("batch_size", [64, 128, 256])
+        args.grid_min = -0.1
+        args.grid_max = 1.1
+        args.epochs = 150
+        args.patience = 30
+        args.log_freq = args.epochs // 10
         args.use_weighted_loss = False
         args.use_roc_auc = True
 
