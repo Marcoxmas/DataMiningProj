@@ -11,15 +11,54 @@ def one_hot(value, choices):
 
 
 def atom_features(atom):
-    """Returns a simplified atomic feature vector."""
+    """Returns a rich atom feature vector."""
     features = []
-    features.append(atom.GetAtomicNum())  # Use atomic number directly
-    features.append(atom.GetDegree())
-    features.append(atom.GetFormalCharge())
-    features.append(int(atom.GetIsAromatic()))
-    features.append(atom.GetTotalNumHs(includeNeighbors=True))
-    return torch.tensor(features, dtype=torch.float)
+    # 1. Atom type (one-hot over 100 common elements, atomic number)
+    atom_type_list = list(range(1, 101))  # Atomic numbers from 1 to 100
+    features += one_hot(atom.GetAtomicNum(), atom_type_list)
 
+    # 2. Number of bonds (degree, one-hot 0-5)
+    features += one_hot(atom.GetDegree(), list(range(6)))
+
+    # 3. Formal charge (scaled integer, normalize to [-1, 1] assuming range -5 to 5)
+    formal_charge = float(atom.GetFormalCharge())
+    features.append(formal_charge / 5.0)  # Normalized
+
+    # 4. Chirality (one-hot: R, S, None, other)
+    chirality = atom.GetChiralTag()
+    chirality_list = [
+        Chem.rdchem.ChiralType.CHI_TETRAHEDRAL_CW,   # R
+        Chem.rdchem.ChiralType.CHI_TETRAHEDRAL_CCW,  # S
+        Chem.rdchem.ChiralType.CHI_UNSPECIFIED,      # None
+        Chem.rdchem.ChiralType.CHI_OTHER             # Other
+    ]
+    features += one_hot(chirality, chirality_list)
+
+    # 5. Number of Hydrogens (one-hot 0-4)
+    features += one_hot(atom.GetTotalNumHs(includeNeighbors=True), list(range(5)))
+
+    # 6. Hybridization (one-hot: sp, sp2, sp3, etc.)
+    hybridization_list = [
+        Chem.rdchem.HybridizationType.SP,
+        Chem.rdchem.HybridizationType.SP2,
+        Chem.rdchem.HybridizationType.SP3,
+        Chem.rdchem.HybridizationType.SP3D,
+        Chem.rdchem.HybridizationType.SP3D2
+    ]
+    features += one_hot(atom.GetHybridization(), hybridization_list)
+
+    # 7. Aromaticity (boolean)
+    features.append(int(atom.GetIsAromatic()))
+
+    # 8. Atomic mass (continuous, scaled by 0.01, then normalized to [0, 1] for common elements)
+    # Most common atomic masses are < 250, so scale by 0.01 and then divide by 2.5
+    atomic_mass = atom.GetMass() * 0.01
+    features.append(atomic_mass / 2.5)
+
+    # Convert to tensor and clamp to [0, 1] for all features (except one-hot and chirality, which are already 0/1)
+    feat_tensor = torch.tensor(features, dtype=torch.float)
+    feat_tensor = torch.clamp(feat_tensor, 0.0, 1.0)
+    return feat_tensor
 
 def bond_features(bond):
     """Returns a rich bond feature vector."""

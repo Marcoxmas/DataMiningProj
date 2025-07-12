@@ -145,22 +145,43 @@ def graph_classification(args):
 			metric_name = "Val ROC-AUC" if args.use_roc_auc else "Val Acc"
 			print(f"Epoch {epoch:03d}: Train Loss: {epoch_loss:.4f}, {metric_name}: {val_acc:.4f}")
 
+
 	# Load best model and evaluate on test set
 	print(f"\nBest model was saved at epoch {best_epoch} with val acc: {best_val_acc:.4f}")
 	model.load_state_dict(torch.load(best_model_path))
 	model.eval()
 	correct = 0
-	total		= 0
+	total = 0
+	all_probs = []
+	all_targets = []
 	with torch.no_grad():
 		for data in test_loader:
-			data 		= data.to(device)
-			out			= model(data.x, data.edge_index, data.batch)
-			pred 		= out.argmax(dim=1)
-			correct	+= (pred == data.y).sum().item()
-			total		+= data.y.size(0)
+			data = data.to(device)
+			out = model(data.x, data.edge_index, data.batch)
+			pred = out.argmax(dim=1)
+			correct += (pred == data.y).sum().item()
+			total += data.y.size(0)
+			# For ROC-AUC
+			probs = torch.softmax(out, dim=1)[:, 1].detach().cpu().numpy() if out.shape[1] > 1 else torch.sigmoid(out).detach().cpu().numpy().flatten()
+			targets = data.y.cpu().numpy()
+			all_probs.extend(probs)
+			all_targets.extend(targets)
 	test_acc = correct / total if total > 0 else 0
 
+	# Compute ROC-AUC if possible
+	test_roc_auc = None
+	try:
+		from sklearn.metrics import roc_auc_score
+		if len(set(all_targets)) > 1:
+			test_roc_auc = roc_auc_score(all_targets, all_probs)
+	except ImportError:
+		print("scikit-learn is not installed. ROC-AUC will not be computed.")
+
 	print(f'Test Loss: Test Acc: {test_acc:.4f}')
+	if test_roc_auc is not None:
+		print(f'Test ROC-AUC: {test_roc_auc:.4f}')
+	else:
+		print('Test ROC-AUC: Not available (only one class present or scikit-learn not installed)')
 
 	# # ---------------------------
 	# # Plot and save the training metrics:
@@ -198,8 +219,8 @@ def graph_classification(args):
 	return best_val_acc
 
 def main():
-    args = get_args()
-    graph_classification(args)
+	args = get_args()
+	graph_classification(args)
 
 if __name__ == "__main__":
 	main()

@@ -21,7 +21,7 @@ def optuna_search(task_type, dataset_name, target_column):
         args.lr = trial.suggest_float("lr", 0.0025, 0.0035)
         args.wd = trial.suggest_float("wd", 8e-5, 3e-4)
         args.hidden_channels = trial.suggest_categorical("hidden_channels", [32, 64, 128])
-        args.layers = trial.suggest_int("layers", 1, 3)
+        args.layers = trial.suggest_int("layers", 1, 6)
         args.dropout = trial.suggest_float("dropout", 0.0001, 0.01)
         args.num_grids = trial.suggest_categorical("num_grids", [10, 12])
         args.batch_size = trial.suggest_categorical("batch_size", [128])
@@ -43,7 +43,7 @@ def optuna_search(task_type, dataset_name, target_column):
             return best_val_score  # minimize MAE
 
     study = optuna.create_study(direction="minimize" if task_type == "regression" else "maximize")
-    study.optimize(objective, n_trials=10)
+    study.optimize(objective, n_trials=20)
 
     os.makedirs("experiments/hparam_search", exist_ok=True)
     with open("experiments/hparam_search/best_trial.json", "w") as f:
