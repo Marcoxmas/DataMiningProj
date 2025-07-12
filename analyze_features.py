@@ -329,12 +329,6 @@ def save_dataset_summaries(all_results, output_dir):
         f.write(f"  Average of all means: {np.mean(all_means):.6f}\n")
         f.write(f"  Average of all standard deviations: {np.mean(all_stds):.6f}\n")
         f.write(f"  Overall range: [{min(all_mins):.6f}, {max(all_maxs):.6f}]\n\n")
-        
-        f.write("KEY OBSERVATIONS:\n")
-        f.write("- All molecular datasets use the same feature engineering from smiles_to_graph.py\n")
-        f.write("- Features are normalized/clamped to [0, 1] range\n")
-        f.write("- Molecular datasets (QM8, QM9, HIV, ToxCast) have consistent feature dimensionality\n")
-        f.write("- Statistical distributions are very similar across molecular datasets\n")
     
     print(f"Individual dataset summaries saved in '{output_dir}' folder")
     print(f"Global summary saved as '{global_filename}'")
