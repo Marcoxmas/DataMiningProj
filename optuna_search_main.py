@@ -25,9 +25,10 @@ def optuna_search(task_type, dataset_name, target_column):
         args.dropout = trial.suggest_float("dropout", 0.1, 0.5)
         args.num_grids = trial.suggest_categorical("num_grids", [10, 12, 14, 16])
         args.batch_size = trial.suggest_categorical("batch_size", [64, 128, 256])
+        args.gamma = trial.suggest_float("gamma", 0.5, 2.5)
         args.grid_min = -1.1
         args.grid_max = 1.1
-        args.epochs = 300
+        args.epochs = 200
         args.patience = 50
         args.log_freq = args.epochs // 10
         args.use_weighted_loss = True

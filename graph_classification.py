@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torch_geometric.loader import DataLoader
 from torch_geometric.datasets import TUDataset
 from toxcast_dataset import ToxCastGraphDataset
@@ -18,6 +19,26 @@ seed = 42
 set_seed(seed)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+class FocalLoss(nn.Module):
+	def __init__(self, alpha=None, gamma=2.0, reduction='mean'):
+		super(FocalLoss, self).__init__()
+		self.alpha = alpha  # Class weights
+		self.gamma = gamma  # Focusing parameter
+		self.reduction = reduction
+		
+	def forward(self, inputs, targets):
+		# Convert to probabilities
+		ce_loss = F.cross_entropy(inputs, targets, weight=self.alpha, reduction='none')
+		pt = torch.exp(-ce_loss)
+		focal_loss = (1 - pt) ** self.gamma * ce_loss
+		
+		if self.reduction == 'mean':
+			return focal_loss.mean()
+		elif self.reduction == 'sum':
+			return focal_loss.sum()
+		else:
+			return focal_loss
 
 def get_args():
 	parser = argparse.ArgumentParser(description="GKAN - Graph Classification Example")
@@ -36,6 +57,7 @@ def get_args():
 	parser.add_argument("--log_freq", type=int, default=10, help="Logging frequency (epochs)")
 	parser.add_argument("--use_weighted_loss", action="store_true", help="Use weighted loss to handle class imbalance")
 	parser.add_argument("--use_roc_auc", action="store_true", help="Evaluate using ROC-AUC instead of accuracy")
+	parser.add_argument("--gamma", type=float, default=1.0, help="Gamma parameter for Focal Loss (default: 1.0)")
 	return parser.parse_args()
 
 def graph_classification(args):
@@ -60,7 +82,8 @@ def graph_classification(args):
 	val_loader 		= DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False)
 	test_loader 	= DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
 
-	# Handle class imbalance with weighted loss if specified
+	# Handle class imbalance and loss function selection
+	weights = None
 	if args.use_weighted_loss:
 		from collections import Counter
 		labels = [int(data.y.item()) for data in dataset]
@@ -68,9 +91,17 @@ def graph_classification(args):
 		total = sum(label_counts.values())
 		class_weights = [total / label_counts[i] for i in range(dataset.num_classes)]
 		weights = torch.tensor(class_weights).to(device)
-		criterion = nn.CrossEntropyLoss(weight=weights)
+	
+	# Choose loss function based on whether ROC-AUC optimization is requested
+	if args.use_roc_auc:
+		# Use Focal Loss for better ROC-AUC alignment
+		criterion = FocalLoss(alpha=weights, gamma=args.gamma)
 	else:
-		criterion = nn.CrossEntropyLoss()
+		# Use standard CrossEntropy Loss (with or without weights)
+		if weights is not None:
+			criterion = nn.CrossEntropyLoss(weight=weights)
+		else:
+			criterion = nn.CrossEntropyLoss()
 
 	model = KANG(
 		dataset.num_node_features,
