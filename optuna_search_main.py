@@ -1,4 +1,5 @@
 import argparse
+import numpy as np
 import optuna
 import os
 import json
@@ -15,35 +16,48 @@ def get_args():
 
 def optuna_search(task_type, dataset_name, target_column):
     def objective(trial):
-        import argparse
-        args = argparse.Namespace()
-        args.dataset_name = dataset_name
-        args.target_column = target_column
-        args.lr = trial.suggest_float("lr", 0.001, 0.01, log=True)
-        args.wd = trial.suggest_float("wd", 1e-5, 1e-3, log=True)
-        args.hidden_channels = trial.suggest_categorical("hidden_channels", [32, 64, 128, 256])
-        args.layers = trial.suggest_int("layers", 1, 7)
-        args.dropout = trial.suggest_float("dropout", 0.1, 0.5)
-        args.num_grids = trial.suggest_categorical("num_grids", [10, 12, 14, 16])
-        args.batch_size = trial.suggest_categorical("batch_size", [64, 128, 256])
-        args.gamma = trial.suggest_float("gamma", 0.5, 2.5)
-        args.grid_min = -1.1
-        args.grid_max = 1.1
-        args.epochs = 200
-        args.patience = 50
-        args.log_freq = args.epochs // 10
-        args.use_weighted_loss = True
-        args.use_roc_auc = True
+        try:
+            import argparse
+            args = argparse.Namespace()
+            args.dataset_name = dataset_name
+            args.target_column = target_column
+            args.lr = trial.suggest_float("lr", 0.001, 0.01, log=True)
+            args.wd = trial.suggest_float("wd", 1e-5, 1e-3, log=True)
+            args.hidden_channels = trial.suggest_categorical("hidden_channels", [32, 64, 128, 256])
+            args.layers = trial.suggest_int("layers", 1, 7)
+            args.dropout = trial.suggest_float("dropout", 0.1, 0.5)
+            args.num_grids = trial.suggest_categorical("num_grids", [10, 12, 14, 16])
+            args.batch_size = trial.suggest_categorical("batch_size", [64, 128, 256])
+            args.gamma = trial.suggest_float("gamma", 0.5, 2.5)
+            args.grid_min = -1.1
+            args.grid_max = 1.1
+            args.epochs = 200
+            args.patience = 50
+            args.log_freq = args.epochs // 10
+            args.use_weighted_loss = True
+            args.use_roc_auc = True
 
-        if task_type == "classification":
-            print("Running classification with:", args)
-            best_val_acc = graph_classification(args)
-            return best_val_acc  # maximize accuracy
-        elif task_type == "regression":
-            print("Running regression with:", args)
-            best_val_score = graph_regression(args)
-            return best_val_score  # minimize MAE
-
+            if task_type == "classification":
+                print("Running classification with:", args)
+                best_val_acc = graph_classification(args)
+                # Check for invalid results
+                if best_val_acc is None or np.isnan(best_val_acc) or np.isinf(best_val_acc):
+                    raise ValueError("Invalid validation accuracy returned")
+                return best_val_acc  # maximize accuracy
+            elif task_type == "regression":
+                print("Running regression with:", args)
+                best_val_score = graph_regression(args)
+                # Check for invalid results
+                if best_val_score is None or np.isnan(best_val_score) or np.isinf(best_val_score):
+                    raise ValueError("Invalid validation score returned")
+                return best_val_score  # minimize MAE
+        except Exception as e:
+            print(f"Trial failed with error: {e}")
+            # Return a penalty value instead of raising
+            if task_type == "classification":
+                return 0.0  # Worst possible accuracy
+            else:
+                return float('inf')  # Worst possible MAE
     study = optuna.create_study(direction="minimize" if task_type == "regression" else "maximize")
     study.optimize(objective, n_trials=25)
 
