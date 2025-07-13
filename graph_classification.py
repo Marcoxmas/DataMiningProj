@@ -60,7 +60,7 @@ def get_args():
 	parser.add_argument("--gamma", type=float, default=1.0, help="Gamma parameter for Focal Loss (default: 1.0)")
 	return parser.parse_args()
 
-def graph_classification(args):
+def graph_classification(args, return_history=False):
 	# Determine the dataset type based on the dataset name
 	if args.dataset_name in ["MUTAG", "PROTEINS"]:
 		dataset_path = f'./dataset/{args.dataset_name}'
@@ -121,6 +121,9 @@ def graph_classification(args):
 	best_epoch = -1
 	best_model_path = f"./experiments/graph_classification/gkan.pth"
 
+	# Initialize history tracking if requested
+	train_losses = [] if return_history else None
+	val_metrics = [] if return_history else None
 
 	for epoch in range(args.epochs):
 		model.train()
@@ -162,6 +165,12 @@ def graph_classification(args):
 					correct += (pred == data.y).sum().item()
 					total += data.y.size(0)
 				val_acc = correct / total if total > 0 else 0
+		
+		# Track training history if requested
+		if return_history:
+			train_losses.append(epoch_loss)
+			val_metrics.append(val_acc)
+		
 		if val_acc > best_val_acc:
 			best_epoch = epoch
 			best_val_acc = val_acc
@@ -248,7 +257,10 @@ def graph_classification(args):
 	# plt.savefig("./experiments/graph_classification/images/val_plot.png", dpi=300)
 	# plt.close(fig)
 
-	return best_val_acc
+	if return_history:
+		return best_val_acc, train_losses, val_metrics
+	else:
+		return best_val_acc
 
 def main():
 	args = get_args()

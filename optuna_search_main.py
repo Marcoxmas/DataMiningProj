@@ -4,6 +4,7 @@ import os
 import json
 from graph_classification import graph_classification
 from graph_regression import graph_regression
+from plotting_utils import plot_training_metrics
 
 def get_args():
     parser = argparse.ArgumentParser(description="Hyperparameter Optimization with Optuna")
@@ -46,12 +47,47 @@ def optuna_search(task_type, dataset_name, target_column):
     study = optuna.create_study(direction="minimize" if task_type == "regression" else "maximize")
     study.optimize(objective, n_trials=25)
 
+    # Save best hyperparameters
     os.makedirs("experiments/hparam_search", exist_ok=True)
     with open("experiments/hparam_search/best_trial.json", "w") as f:
         json.dump(study.best_trial.params, f, indent=4)
 
     print("\nBest hyperparameters:")
     print(study.best_trial.params)
+    
+    # Run the best trial again to get training history for plotting
+    print("\nRunning best hyperparameters again to generate training plots...")
+    import argparse
+    best_args = argparse.Namespace()
+    best_args.dataset_name = dataset_name
+    best_args.target_column = target_column
+    
+    # Apply best hyperparameters
+    for param, value in study.best_trial.params.items():
+        setattr(best_args, param, value)
+    
+    # Set fixed parameters
+    best_args.grid_min = -1.1
+    best_args.grid_max = 1.1
+    best_args.epochs = 200
+    best_args.patience = 50
+    best_args.log_freq = best_args.epochs // 10
+    best_args.use_weighted_loss = True
+    best_args.use_roc_auc = True
+    best_args.return_history = True  # Flag to return training history
+    
+    if task_type == "classification":
+        try:
+            best_val_acc, train_losses, val_metrics = graph_classification(best_args, return_history=True)
+            plot_training_metrics(train_losses, val_metrics, task_type, dataset_name)
+        except Exception as e:
+            print(f"Warning: Could not generate training plots for classification: {e}")
+    elif task_type == "regression":
+        try:
+            best_val_score, train_losses, val_metrics = graph_regression(best_args, return_history=True)
+            plot_training_metrics(train_losses, val_metrics, task_type, dataset_name, target_column)
+        except Exception as e:
+            print(f"Warning: Could not generate training plots for regression: {e}")
 
 if __name__ == "__main__":
     args = get_args()

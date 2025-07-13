@@ -39,7 +39,7 @@ def get_args():
 	parser.add_argument("--log_freq", type=int, default=10, help="Logging frequency (epochs)")
 	return parser.parse_args()
 
-def graph_regression(args):
+def graph_regression(args, return_history=False):
 	if args.dataset_name == "QM9":
 		dataset_path = f'./dataset/{args.dataset_name}_{args.target_column}'
 		dataset = QM9GraphDataset(root=dataset_path, target_column=args.target_column)
@@ -84,6 +84,10 @@ def graph_regression(args):
 	best_epoch = -1
 	best_model_path = f"./experiments/graph_regression/gkan.pth"
 
+	# Initialize history tracking if requested
+	train_losses = [] if return_history else None
+	val_metrics = [] if return_history else None
+
 	for epoch in range(args.epochs):
 		model.train()
 		epoch_loss = 0
@@ -111,6 +115,10 @@ def graph_regression(args):
 		avg_val_loss = total_loss / len(val_loader)
 		avg_val_mae = total_mae / len(val_loader)
 
+		# Track training history if requested
+		if return_history:
+			train_losses.append(epoch_loss)
+			val_metrics.append(avg_val_mae)
 
 		if avg_val_mae < best_val_score:
 			best_val_score = avg_val_mae
@@ -143,7 +151,10 @@ def graph_regression(args):
 	test_mae = total_mae / len(test_loader)
 	print(f'Test RMSE: {test_rmse:.4f}, Test MAE: {test_mae:.4f}')
 
-	return best_val_score
+	if return_history:
+		return best_val_score, train_losses, val_metrics
+	else:
+		return best_val_score
 
 
 def main():
