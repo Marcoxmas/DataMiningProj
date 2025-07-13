@@ -2,13 +2,13 @@ FEATURE ANALYSIS SUMMARY: QM9
 ==================================================
 
 Dataset: QM9
-Samples analyzed: 1000
-Total nodes: 5969
+Samples analyzed: 5000
+Total nodes: 34987
 Features per node: 123
 
 GLOBAL STATISTICS:
-  Minimum value: 0.000000
+  Minimum value: -0.200000
   Maximum value: 1.000000
-  Mean value: 0.043157
-  Standard deviation: 0.202217
-  Value range: [0.000000, 1.000000]
+  Mean value: 0.042906
+  Standard deviation: 0.201655
+  Value range: [-0.200000, 1.000000]

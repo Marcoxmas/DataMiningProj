@@ -25,12 +25,12 @@ def optuna_search(task_type, dataset_name, target_column):
         args.dropout = trial.suggest_float("dropout", 0.1, 0.5)
         args.num_grids = trial.suggest_categorical("num_grids", [10, 12, 14, 16])
         args.batch_size = trial.suggest_categorical("batch_size", [64, 128, 256])
-        args.grid_min = -0.1
+        args.grid_min = -1.1
         args.grid_max = 1.1
-        args.epochs = 150
-        args.patience = 30
+        args.epochs = 300
+        args.patience = 50
         args.log_freq = args.epochs // 10
-        args.use_weighted_loss = False
+        args.use_weighted_loss = True
         args.use_roc_auc = True
 
         if task_type == "classification":
@@ -43,7 +43,7 @@ def optuna_search(task_type, dataset_name, target_column):
             return best_val_score  # minimize MAE
 
     study = optuna.create_study(direction="minimize" if task_type == "regression" else "maximize")
-    study.optimize(objective, n_trials=20)
+    study.optimize(objective, n_trials=25)
 
     os.makedirs("experiments/hparam_search", exist_ok=True)
     with open("experiments/hparam_search/best_trial.json", "w") as f:

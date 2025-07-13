@@ -147,7 +147,8 @@ def graph_classification(args):
 
 
 	# Load best model and evaluate on test set
-	print(f"\nBest model was saved at epoch {best_epoch} with val acc: {best_val_acc:.4f}")
+	metric_name = "val roc auc" if args.use_roc_auc else "val acc"
+	print(f"\nBest model was saved at epoch {best_epoch} with {metric_name}: {best_val_acc:.4f}")
 	model.load_state_dict(torch.load(best_model_path))
 	model.eval()
 	correct = 0

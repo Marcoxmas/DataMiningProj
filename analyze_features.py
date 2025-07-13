@@ -174,7 +174,7 @@ def analyze_all_datasets():
     all_features_combined = []
     
     for dataset_name, dataset in datasets.items():
-        result = analyze_single_dataset(dataset, dataset_name, output_dir, sample_size=1000)
+        result = analyze_single_dataset(dataset, dataset_name, output_dir, sample_size=5000)
         if result:
             all_results.append(result)
             # Collect features for global analysis

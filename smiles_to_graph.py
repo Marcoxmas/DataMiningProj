@@ -57,7 +57,7 @@ def atom_features(atom):
 
     # Convert to tensor and clamp to [0, 1] for all features (except one-hot and chirality, which are already 0/1)
     feat_tensor = torch.tensor(features, dtype=torch.float)
-    feat_tensor = torch.clamp(feat_tensor, 0.0, 1.0)
+    #feat_tensor = torch.clamp(feat_tensor, 0.0, 1.0)
     return feat_tensor
 
 def bond_features(bond):
