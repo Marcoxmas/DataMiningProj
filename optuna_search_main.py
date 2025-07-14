@@ -12,9 +12,11 @@ def get_args():
     parser.add_argument("--task", type=str, choices=["classification", "regression"], required=True, help="Task type")
     parser.add_argument("--dataset_name", type=str, required=True, help="Dataset name")
     parser.add_argument("--target_column", type=str, default="mu", help="Target column for regression tasks")
+    parser.add_argument("--use_subset", action="store_true", help="Use a smaller subset of the dataset during tuning")
+    parser.add_argument("--subset_ratio", type=float, default=0.3, help="Ratio of dataset to use for subset (default: 0.3)")
     return parser.parse_args()
 
-def optuna_search(task_type, dataset_name, target_column):
+def optuna_search(task_type, dataset_name, target_column, use_subset=True, subset_ratio=0.3):
     def objective(trial):
         try:
             import argparse
@@ -31,11 +33,14 @@ def optuna_search(task_type, dataset_name, target_column):
             args.gamma = trial.suggest_float("gamma", 0.5, 2.5)
             args.grid_min = -1.1
             args.grid_max = 1.1
-            args.epochs = 150
+            args.epochs = 50
             args.patience = 30
             args.log_freq = args.epochs // 10
             args.use_weighted_loss = True
             args.use_roc_auc = True
+            # Enable subset for faster hyperparameter tuning
+            args.use_subset = use_subset
+            args.subset_ratio = subset_ratio
 
             if task_type == "classification":
                 print("Running classification with:", args)
@@ -64,13 +69,18 @@ def optuna_search(task_type, dataset_name, target_column):
     # Save best hyperparameters
     os.makedirs("experiments/hparam_search", exist_ok=True)
     with open("experiments/hparam_search/best_trial.json", "w") as f:
-        json.dump(study.best_trial.params, f, indent=4)
+        best_params = study.best_trial.params.copy()
+        best_params["use_subset"] = use_subset
+        best_params["subset_ratio"] = subset_ratio
+        json.dump(best_params, f, indent=4)
 
     print("\nBest hyperparameters:")
     print(study.best_trial.params)
+    if use_subset:
+        print(f"Note: Hyperparameters found using {subset_ratio*100:.0f}% of the dataset for faster tuning.")
     
     # Run the best trial again to get training history for plotting
-    print("\nRunning best hyperparameters again to generate training plots...")
+    print("\nRunning best hyperparameters again on FULL dataset to generate training plots...")
     import argparse
     best_args = argparse.Namespace()
     best_args.dataset_name = dataset_name
@@ -80,7 +90,7 @@ def optuna_search(task_type, dataset_name, target_column):
     for param, value in study.best_trial.params.items():
         setattr(best_args, param, value)
     
-    # Set fixed parameters
+    # Set fixed parameters - DISABLE subset for final training
     best_args.grid_min = -1.1
     best_args.grid_max = 1.1
     best_args.epochs = 200
@@ -89,6 +99,8 @@ def optuna_search(task_type, dataset_name, target_column):
     best_args.use_weighted_loss = True
     best_args.use_roc_auc = True
     best_args.return_history = True  # Flag to return training history
+    best_args.use_subset = False  # Use full dataset for final training
+    best_args.subset_ratio = 1.0
     
     if task_type == "classification":
         try:
@@ -105,4 +117,4 @@ def optuna_search(task_type, dataset_name, target_column):
 
 if __name__ == "__main__":
     args = get_args()
-    optuna_search(args.task, args.dataset_name, args.target_column)
+    optuna_search(args.task, args.dataset_name, args.target_column, args.use_subset, args.subset_ratio)

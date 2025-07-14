@@ -52,6 +52,12 @@ def graph_regression(args, return_history=False):
 		print(f"QM8 dataset loaded with target column: {args.target_column}")
 		dataset.print_dataset_info()
 
+	# Apply subset for faster hyperparameter tuning if specified
+	if getattr(args, "use_subset", False):
+		subset_size = int(len(dataset) * getattr(args, "subset_ratio", 0.3))
+		dataset = dataset[:subset_size]
+		print(f"Using subset of {subset_size} samples ({getattr(args, 'subset_ratio', 0.3)*100:.0f}% of full dataset) for faster tuning")
+
 	shuffled_dataset = dataset.shuffle()
 	train_size = int(0.8 * len(dataset))
 	val_size = int(0.1 * len(dataset))
