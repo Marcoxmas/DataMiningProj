@@ -61,6 +61,7 @@ def get_args():
 	parser.add_argument("--use_weighted_loss", action="store_true", help="Use weighted loss to handle class imbalance")
 	parser.add_argument("--use_roc_auc", action="store_true", help="Evaluate using ROC-AUC instead of accuracy")
 	parser.add_argument("--gamma", type=float, default=1.0, help="Gamma parameter for Focal Loss (default: 1.0)")
+	parser.add_argument("--return_history", action="store_true", help="Return training history for plotting")
 	return parser.parse_args()
 
 def graph_classification(args, return_history=False):
@@ -267,7 +268,7 @@ def graph_classification(args, return_history=False):
 
 def main():
 	args = get_args()
-	graph_classification(args)
+	graph_classification(args, return_history=args.return_history)
 
 if __name__ == "__main__":
 	main()

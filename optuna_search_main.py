@@ -31,8 +31,8 @@ def optuna_search(task_type, dataset_name, target_column):
             args.gamma = trial.suggest_float("gamma", 0.5, 2.5)
             args.grid_min = -1.1
             args.grid_max = 1.1
-            args.epochs = 200
-            args.patience = 50
+            args.epochs = 150
+            args.patience = 30
             args.log_freq = args.epochs // 10
             args.use_weighted_loss = True
             args.use_roc_auc = True
@@ -59,7 +59,7 @@ def optuna_search(task_type, dataset_name, target_column):
             else:
                 return float('inf')  # Worst possible MAE
     study = optuna.create_study(direction="minimize" if task_type == "regression" else "maximize")
-    study.optimize(objective, n_trials=25)
+    study.optimize(objective, n_trials=20)
 
     # Save best hyperparameters
     os.makedirs("experiments/hparam_search", exist_ok=True)
