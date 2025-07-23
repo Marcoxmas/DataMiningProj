@@ -8,3 +8,4 @@ src/old/*
 src/__pycache__/*
 .DS_Store
 .venv
+__pycache__/*
